@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>User List</title></head>
+<body>
+<h1>Registered Users</h1>
+<div th:if="${users.isEmpty()}">
+    <p>No users yet.</p>
+</div>
+<ul th:if="${!users.isEmpty()}">
+    <li th:each="u : ${users}">
+        ID: <span th:text="${u.id}"></span>,
+        Login: <span th:text="${u.login}"></span>,
+        Role: <span th:text="${u.role}"></span>
+    </li>
+</ul>
+<a href="/user/new">Register another user</a>
+</body>
+</html>
+
