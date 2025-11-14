@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Product</title>
+</head>
+<body>
+<h1>Create New Product</h1>
+<form th:action="@{/products/create}" th:object="${product}" method="post">
+
+    <div>
+        <label for="name">Product Name:</label>
+        <input type="text" id="name" th:field="*{name}">
+        <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</p>
+    </div>
+
+    <div>
+        <label for="price">Price:</label>
+        <input type="number" step="0.01" id="price" th:field="*{price}">
+        <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Price Error</p>
+    </div>
+
+    <button type="submit">Save Product</button>
+</form>
+
+<p><a th:href="@{/product/gift}">Test Resource Not Found (404)</a></p>
+</body>
+</html>
