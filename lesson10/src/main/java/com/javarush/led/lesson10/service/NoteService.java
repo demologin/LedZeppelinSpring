@@ -3,7 +3,7 @@ package com.javarush.led.lesson10.service;
 import com.javarush.led.lesson10.mapper.NoteDto;
 import com.javarush.led.lesson10.model.note.NoteIn;
 import com.javarush.led.lesson10.model.note.NoteOut;
-import com.javarush.led.lesson10.repository.NoteRepoImpl;
+import com.javarush.led.lesson10.repository.NoteRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,39 +13,39 @@ import java.util.List;
 @AllArgsConstructor
 public class NoteService {
 
-    public final NoteRepoImpl repoImpl;
+    public final NoteRepo noteRepo;
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public final NoteDto mapper;
 
     public List<NoteOut> getAll() {
-        return repoImpl
+        return noteRepo
                 .getAll()
                 .map(mapper::out)
                 .toList();
     }
 
     public NoteOut get(Long id) {
-        return repoImpl
+        return noteRepo
                 .get(id)
                 .map(mapper::out)
                 .orElseThrow();
     }
 
     public NoteOut create(NoteIn input) {
-        return repoImpl
+        return noteRepo
                 .create(mapper.in(input))
                 .map(mapper::out)
                 .orElseThrow();
     }
 
     public NoteOut update(NoteIn input) {
-        return repoImpl
+        return noteRepo
                 .update(mapper.in(input))
                 .map(mapper::out)
                 .orElseThrow();
     }
 
     public boolean delete(Long id) {
-        return repoImpl.delete(id);
+        return noteRepo.delete(id);
     }
 }

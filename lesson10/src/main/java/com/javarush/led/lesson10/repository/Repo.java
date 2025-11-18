@@ -49,14 +49,17 @@ public interface Repo<T> extends CrudRepository<T, Long> {
     /**
      * Удаляет сущность по ID.
      * Использует deleteById() из CrudRepository и возвращает true/false.
-     *
+     * <p>
      * Внимание: CrudRepository не возвращает boolean.
      * Для соответствия исходному интерфейсу, мы предполагаем, что удаление
      * прошло успешно, если findById(id) после операции возвращает Optional.empty().
      */
     default boolean delete(Long id) {
-        deleteById(id);
+        if (existsById(id)) {
+            deleteById(id);
+            return true;
+        }
         // Проверка удаления (опционально, но рекомендуется для надежности):
-        return !existsById(id);
+        return false;
     }
 }

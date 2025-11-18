@@ -1,63 +1,41 @@
 package com.javarush.led.lesson10.service;
 
-import com.javarush.led.lesson10.mapper.EditorDto;
+import com.javarush.led.lesson10.api.TestEnv;
 import com.javarush.led.lesson10.model.editor.Editor;
 import com.javarush.led.lesson10.model.editor.EditorIn;
 import com.javarush.led.lesson10.model.editor.EditorOut;
-import com.javarush.led.lesson10.repository.EditorRepo;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class EditorServiceTest {
+@RequiredArgsConstructor
+public class EditorServiceIT extends TestEnv {
 
-    @Mock
-    private EditorRepo repoImpl;
+    private final EditorService editorService;
 
-    @Mock
-    private EditorDto mapper;
+    private final Long TEST_ID = 11L;
 
-    @InjectMocks
-    private EditorService editorService;
-
-    private final Long TEST_ID = 1L;
-    private Editor mockEntity;
     private EditorOut mockOut;
     private EditorIn mockIn;
 
     @BeforeEach
     void setUp() {
-        mockEntity = Editor.builder()
-                .id(TEST_ID)
-                .login("test_user")
-                .password("secure_pass123")
-                .firstname("Test")
-                .lastname("User")
-                .build();
 
         mockOut = EditorOut.builder()
-                .id(TEST_ID)
                 .login("test_user")
                 .firstname("Test")
                 .lastname("User")
                 .build();
 
         mockIn = EditorIn.builder()
-                .id(TEST_ID)
                 .login("new_user")
                 .password("new_secure_pass123")
                 .firstname("New")
@@ -119,89 +97,58 @@ public class EditorServiceTest {
     @ParameterizedTest(name = "Create with login: {0}")
     @MethodSource("creationTestData")
     void createShouldReturnEditorOutOnSuccessParameterized(EditorIn input, Editor entity, EditorOut expectedOut) {
-        when(mapper.in(input)).thenReturn(entity);
-        when(repoImpl.create(entity)).thenReturn(Optional.of(entity));
-        when(mapper.out(entity)).thenReturn(expectedOut);
+
 
         EditorOut actual = editorService.create(input);
 
         assertNotNull(actual);
-        assertEquals(expectedOut, actual);
+        assertEquals(expectedOut.getLogin(), actual.getLogin());
+        assertEquals(expectedOut.getFirstname(), actual.getFirstname());
+        assertEquals(expectedOut.getLastname(), actual.getLastname());
 
-        verify(mapper, times(1)).in(input);
-        verify(repoImpl, times(1)).create(entity);
-        verify(mapper, times(1)).out(entity);
+    }
+
+    @Test
+    void getShouldReturnEditorOutForValidId() {
+        EditorOut editorOut = editorService.create(mockIn);
+        EditorOut actual = editorService.get(editorOut.getId());
+        assertNotNull(actual);
     }
 
     // --- Тест для UPDATE (используем mockIn/mockEntity/mockOut из setup) ---
 
     @Test
     void updateShouldReturnEditorOutOnSuccess() {
-        when(mapper.in(mockIn)).thenReturn(mockEntity);
-        when(repoImpl.update(mockEntity)).thenReturn(Optional.of(mockEntity));
-        when(mapper.out(mockEntity)).thenReturn(mockOut);
-
         EditorOut actual = editorService.update(mockIn);
 
         assertNotNull(actual);
-        assertEquals(mockOut, actual);
+        assertEquals(mockIn.getLogin(), actual.getLogin());
+        assertEquals(mockIn.getFirstname(), actual.getFirstname());
+        assertEquals(mockIn.getLastname(), actual.getLastname());
 
-        verify(mapper, times(1)).in(mockIn);
-        verify(repoImpl, times(1)).update(mockEntity);
-        verify(mapper, times(1)).out(mockEntity);
     }
 
     // --- Другие тесты ---
 
     @Test
     void getAllShouldReturnListOfEditorOut() {
-        List<Editor> entities = List.of(mockEntity, mockEntity);
-        List<EditorOut> expected = List.of(mockOut, mockOut);
-
-        when(repoImpl.getAll()).thenReturn(entities.stream());
-        when(mapper.out(mockEntity)).thenReturn(mockOut);
 
         List<EditorOut> actual = editorService.getAll();
-
         assertNotNull(actual);
-        assertEquals(expected.size(), actual.size());
 
-        verify(repoImpl, times(1)).getAll();
-        verify(mapper, times(entities.size())).out(mockEntity);
-    }
-
-    @Test
-    void getShouldReturnEditorOutForValidId() {
-        when(repoImpl.get(TEST_ID)).thenReturn(Optional.of(mockEntity));
-        when(mapper.out(mockEntity)).thenReturn(mockOut);
-
-        EditorOut actual = editorService.get(TEST_ID);
-
-        assertNotNull(actual);
-        assertEquals(mockOut, actual);
-
-        verify(repoImpl, times(1)).get(TEST_ID);
-        verify(mapper, times(1)).out(mockEntity);
     }
 
     @Test
     void getShouldThrowExceptionForInvalidId() {
-        when(repoImpl.get(TEST_ID)).thenReturn(Optional.empty());
 
-        assertThrows(java.util.NoSuchElementException.class, () -> editorService.get(TEST_ID));
+        assertThrows(java.util.NoSuchElementException.class, () -> editorService.get(1234567890L));
 
-        verify(repoImpl, times(1)).get(TEST_ID);
-        verify(mapper, times(0)).out(any());
     }
 
     @Test
     void deleteShouldReturnTrueOnSuccess() {
-        when(repoImpl.delete(TEST_ID)).thenReturn(true);
-
-        boolean actual = editorService.delete(TEST_ID);
-
+        EditorOut editorOut = editorService.create(mockIn);
+        boolean actual = editorService.delete(editorOut.getId());
         assertTrue(actual);
-
-        verify(repoImpl, times(1)).delete(TEST_ID);
     }
 }

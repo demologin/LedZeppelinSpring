@@ -1,8 +1,8 @@
 package com.javarush.led.lesson10.repository;
 
-import com.javarush.led.lesson10.model.tag.Tag;
+import com.javarush.led.lesson10.model.note.Note;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TagRepoImpl extends Repo<Tag> {
+public interface NoteRepo extends Repo<Note> {
 }
