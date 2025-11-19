@@ -31,13 +31,13 @@ public @interface IntegrationTest {
     @TestConfiguration
     class PostgresTestContainer {
 
-        public static final String DOCKER_TESTCONTAINERS_IMAGE_NAME = "docker.testcontainers.image.name";
+        public static final String POSTGRES_CONTAINER_NAME = "postgres.container.name";
         public static final String DEFAULT_POSTGRES = "postgres:16";
 
         @Bean
         @ServiceConnection //replace @DynamicProperties
         public PostgreSQLContainer<?> postgresContainer(
-                @Value("${" + DOCKER_TESTCONTAINERS_IMAGE_NAME + "?:" + DEFAULT_POSTGRES + "}")
+                @Value("${" + POSTGRES_CONTAINER_NAME + "?:" + DEFAULT_POSTGRES + "}")
                 String dockerTestcontainersImageName
         ) {
             return new PostgreSQLContainer<>(dockerTestcontainersImageName);
