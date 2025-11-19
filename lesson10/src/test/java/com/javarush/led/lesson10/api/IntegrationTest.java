@@ -1,5 +1,6 @@
 package com.javarush.led.lesson10.api;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -30,10 +31,16 @@ public @interface IntegrationTest {
     @TestConfiguration
     class PostgresTestContainer {
 
+        public static final String DOCKER_TESTCONTAINERS_IMAGE_NAME = "docker.testcontainers.image.name";
+        public static final String DEFAULT_POSTGRES = "postgres:16";
+
         @Bean
         @ServiceConnection //replace @DynamicProperties
-        public PostgreSQLContainer<?> postgresContainer() {
-            return new PostgreSQLContainer<>("postgres:16");
+        public PostgreSQLContainer<?> postgresContainer(
+                @Value("${" + DOCKER_TESTCONTAINERS_IMAGE_NAME + "?:" + DEFAULT_POSTGRES + "}")
+                String dockerTestcontainersImageName
+        ) {
+            return new PostgreSQLContainer<>(dockerTestcontainersImageName);
         }
     }
 }
