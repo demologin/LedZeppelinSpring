@@ -1,0 +1,17 @@
+package com.javarush.led.lesson11.mapper;
+
+import com.javarush.led.lesson11.model.editor.Editor;
+import com.javarush.led.lesson11.model.editor.EditorIn;
+import com.javarush.led.lesson11.model.editor.EditorOut;
+import org.mapstruct.Mapper;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+
+@Mapper(
+        componentModel = "spring",
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+)
+public interface EditorDto {
+    EditorOut out(Editor entity);
+
+    Editor in(EditorIn inputDto);
+}
