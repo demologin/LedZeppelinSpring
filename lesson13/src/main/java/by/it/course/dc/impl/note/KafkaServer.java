@@ -34,15 +34,16 @@ public class KafkaServer {
         UUID uuid = UUID.fromString(record.key());
         NoteEvent noteEvent = json.readValue(record.value(), NoteEvent.class);
         NoteRequestTo noteRequestTo = noteEvent.noteRequestTo();
-        List<NoteResponseTo> noteResponseTos = switch (noteEvent.operation()) {
-            case FIND_ALL -> noteService.findAll();
-            case FIND_BY_ID -> List.of(noteService.findById(noteEvent.idData()));
-            case CREATE -> List.of(noteService.create(noteRequestTo, Locale.getDefault()));
-            case UPDATE -> List.of(noteService.update(noteRequestTo));
-            case REMOVE_BY_ID -> {
+        List<NoteResponseTo> noteResponseTos = switch (noteEvent.operation().toString()) {
+            case "FIND_ALL" -> noteService.findAll();
+            case "FIND_BY_ID" -> List.of(noteService.findById(noteEvent.idData()));
+            case "CREATE" -> List.of(noteService.create(noteRequestTo, Locale.getDefault()));
+            case "UPDATE" -> List.of(noteService.update(noteRequestTo));
+            case "REMOVE_BY_ID" -> {
                 noteService.removeById(noteEvent.idData());
                 yield List.of();
             }
+            default -> throw new IllegalStateException("Unexpected value: " + noteEvent.operation());
         };
         NoteEvent result = new NoteEvent(noteResponseTos);
         sender.send(RESPONSE_TOPIC, uuid.toString(), json.writeValueAsString(result));

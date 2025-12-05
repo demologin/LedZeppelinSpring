@@ -25,7 +25,10 @@
         <url/>
     </scm>
     <properties>
-
+        <java.specification.version>21</java.specification.version>
+        <maven.compiler.source>${java.specification.version}</maven.compiler.source>
+        <maven.compiler.target>${java.specification.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
 
