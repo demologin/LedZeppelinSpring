@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet id="1763728582883-1" author="akhmelev">
+        <renameTable oldTableName="editor" newTableName="tbl_editor"/>
+    </changeSet>
+    <changeSet id="1763728582883-2" author="akhmelev">
+        <renameTable oldTableName="story" newTableName="tbl_story"/>
+    </changeSet>
+    <changeSet id="1763728582883-3" author="akhmelev">
+        <renameTable oldTableName="note" newTableName="tbl_note"/>
+    </changeSet>
+    <changeSet id="1763728582883-4" author="akhmelev">
+        <renameTable oldTableName="tag" newTableName="tbl_tag"/>
+    </changeSet>
+
+</databaseChangeLog>

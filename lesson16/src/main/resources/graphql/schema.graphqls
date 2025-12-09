@@ -1,0 +1,41 @@
+# Объект Editor, который возвращается (аналог EditorOut.java)
+type Editor {
+    id: ID!
+    login: String!
+    firstname: String!
+    lastname: String!
+    # Пароль не возвращаем (как и в EditorOut)
+}
+
+# Входной объект для создания/обновления (аналог EditorIn.java)
+input EditorInput {
+    # Для создания ID не нужен, для обновления может быть включен (или передан аргументом)
+    # В рамках REST PUT у вас ID был в DTO, сохраним это.
+    id: ID
+    login: String!
+    password: String! # Пароль передается при создании/обновлении
+    firstname: String!
+    lastname: String!
+}
+
+# Запросы (Чтение данных - GET)
+type Query {
+    # getAll() -> Flux<EditorOut>
+    allEditors: [Editor!]!
+
+    # get(Long id) -> Mono<EditorOut>
+    editorById(id: ID!): Editor
+}
+
+# Мутации (Изменение данных - POST, PUT, DELETE)
+type Mutation {
+    # create(EditorIn input) -> Mono<EditorOut>
+    createEditor(input: EditorInput!): Editor!
+
+    # update(EditorIn input) -> Mono<EditorOut>
+    updateEditor(input: EditorInput!): Editor!
+
+    # delete(Long id) -> Mono<Void>
+    # В GraphQL принято возвращать булево значение успеха
+    deleteEditor(id: ID!): Boolean!
+}
