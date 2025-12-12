@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
 public class ApplicationWithSecurity {
     public static void main(String[] args) {
