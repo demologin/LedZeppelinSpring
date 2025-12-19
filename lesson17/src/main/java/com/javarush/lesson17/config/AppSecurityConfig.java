@@ -1,11 +1,14 @@
 package com.javarush.lesson17.config;
 
+import com.javarush.lesson17.entity.Role;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -21,27 +24,46 @@ public class AppSecurityConfig {
     @Bean
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
-        http.formLogin(withDefaults());
-        http.httpBasic(withDefaults());
-        return http.build();
-    }
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/registration").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/logout").permitAll()
 
+                        .requestMatchers(HttpMethod.GET,"/users")
+                        .hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USER.getAuthority())
 
-    @Bean
-    public InMemoryUserDetailsManager inMemoryUserDetailsManager(SecurityProperties properties,
-                                                                 ObjectProvider<PasswordEncoder> passwordEncoder) {
-        UserDetails carl = User.withUsername("Carl")
-                .password("{bcrypt}$2a$10$4OlZHUW/ykpj/UQd498K9uL2hd0ox3YQRJgFa4R0FxxxqE5RwEEwu")
-                .roles("ADMIN","USER")
+                        .requestMatchers(HttpMethod.POST,"/users")
+                        .hasAuthority(Role.ADMIN.getAuthority())
+
+                        .anyRequest()
+                        .authenticated()
+                )
+                .formLogin(formConfig -> formConfig
+                        .loginPage("/login")
+                        .usernameParameter("login")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/users", true)
+                        .failureUrl("/login?error")
+                )
                 .build();
-        return new InMemoryUserDetailsManager(carl);
     }
+
+
+//    @Bean
+//    public InMemoryUserDetailsManager inMemoryUserDetailsManager(SecurityProperties properties,
+//                                                                 ObjectProvider<PasswordEncoder> passwordEncoder) {
+//        UserDetails carl = User.withUsername("Carl")
+//                .password("{bcrypt}$2a$10$4OlZHUW/ykpj/UQd498K9uL2hd0ox3YQRJgFa4R0FxxxqE5RwEEwu")
+//                .roles("ADMIN", "USER")
+//                .build();
+//        return new InMemoryUserDetailsManager(carl);
+//    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
-        PasswordEncoder delegatingPasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        return delegatingPasswordEncoder;
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
 

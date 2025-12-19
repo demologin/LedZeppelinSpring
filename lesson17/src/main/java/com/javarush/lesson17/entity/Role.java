@@ -1,5 +1,18 @@
 package com.javarush.lesson17.entity;
 
-public enum Role {
-    ADMIN,USER,GUEST
+import org.springframework.security.core.GrantedAuthority;
+
+public enum Role implements GrantedAuthority {
+    ADMIN,USER,GUEST;
+
+    @Override
+    public String getAuthority() {
+        return "ROLE_"+name().toUpperCase();
+    }
+
+    public String getRole() {
+        return name().toUpperCase();
+    }
+
+
 }

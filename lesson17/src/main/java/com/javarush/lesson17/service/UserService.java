@@ -4,6 +4,7 @@ import com.javarush.lesson17.entity.User;
 import com.javarush.lesson17.repository.Repo;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,8 @@ import java.util.Optional;
 @AllArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
+
+    private final PasswordEncoder passwordEncoder;
 
     private final Repo repo;
 
@@ -28,6 +31,9 @@ public class UserService {
 
     @Transactional
     public User save(User user) {
+        String original = user.getPassword();
+        String encode = passwordEncoder.encode(original);
+        user.setPassword(encode);
         return repo.saveAndFlush(user);
     }
 
