@@ -59,7 +59,7 @@ public class AppSecurityConfig {
                         .usernameParameter("login")
                         .passwordParameter("password")
                         .defaultSuccessUrl("/users", true)
-                        .failureUrl("/login?error")
+                        .failureUrl("/login?error=true")
                 )
                 .oauth2Login(o2l -> o2l
                         .loginPage("/login")

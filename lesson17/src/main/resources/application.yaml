@@ -19,10 +19,10 @@ spring:
             client-secret: FZgcObX5yWkDIudxdboYcZrK83bS6WGk
             redirect-uri: http://localhost:8080/login/oauth2/code/keycloak
 
-          scope:
-            - openid
-            - edit-user
-            - microprofile-jwt
+            scope:
+              - openid
+              - edit-user
+              - microprofile-jwt
 
           github:
             client-id: Ov23lijRyL1bHqt9pUOo
