@@ -1,0 +1,19 @@
+server:
+  port: 8765
+spring:
+  application:
+    name: lesson23-config
+  cloud:
+    config:
+      server:
+#        native:
+#          search-locations: file:///Users/akhmelev/IdeaProjects/LedZeppelinSpring/.cfg/config-app/{profile}/{application}
+        git:
+          uri: https://github.com/demologin/LedZeppelinSpring
+          clone-on-start: true
+          search-paths:
+            - '.cfg/config-app/{profile}/{application}'
+  security:
+    user:
+      name: admin
+      password: pass

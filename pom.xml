@@ -30,6 +30,7 @@
         <module>lesson20</module>
         <module>lesson21</module>
         <module>lesson22</module>
+        <module>lesson23</module>
     </modules>
 
     <properties>
@@ -56,6 +57,14 @@
                 <type>pom</type>
                 <scope>import</scope>
                 <version>3.3.5</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <type>pom</type>
+                <scope>import</scope>
+                <version>2023.0.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
