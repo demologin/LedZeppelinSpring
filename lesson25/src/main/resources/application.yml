@@ -9,7 +9,7 @@ spring:
 #          uri: http://127.0.0.1:8080
           uri: lb://lesson19
           predicates:
-            - Host=lesson19-app-127-0-0-1.nip.io
+            - Host=lesson19**.nip.io
           filters:
             - PreserveHostHeader
 eureka:
